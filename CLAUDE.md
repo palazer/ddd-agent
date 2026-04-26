@@ -23,6 +23,8 @@ rather than answers.
   ```
   projects/<slug>/
   ├── input/                        # user-drops source docs (specs, research); read-only
+  ├── 0-presentation.md             # /ddd:present — 4-tier prose cover sheet (derivative)
+  ├── 0-diagrams/<NN>-*.md          # /ddd:diagrams — Mermaid visual companions (derivative)
   ├── 1-cynefin-framing.md
   ├── 2-event-storm.md
   ├── 3-domain-stories.md           # optional
@@ -34,8 +36,10 @@ rather than answers.
   ├── 7-adr/NNNN-<title>.md         # MADR decision records
   └── 8-revisions/NNNN-<title>.md   # /ddd:revise audit trail (one per revision)
   ```
-  Numeric prefixes reflect ceremony order; `3b` / `6` / `7` / `8` folder
-  prefixes preserve reading order when expanded as directories.
+  Numeric prefixes reflect ceremony order; `0-` is reserved for **derivative
+  cross-cutting outputs** (presentation, diagrams) that synthesise from many
+  upstream sources. `3b` / `6` / `7` / `8` folder prefixes preserve reading
+  order when expanded as directories.
 - `skills/`, `agents/`, `commands/` — plugin components at the root, the
   canonical Claude Code plugin layout (auto-discovered at install time).
 
@@ -125,3 +129,12 @@ is empty on purpose — this agent is domain-agnostic.
   `--resync` mode walks the artifact-impact matrix backwards to detect
   prose-source drift and propose per-diagram regeneration. See
   `kb/patterns/ddd-diagram-catalog.md` for the 4-tier curation.
+- `/ddd:present "--slug <slug>" [--resync] [--tier 1|1+2|all|custom]` —
+  prose companion generator. Produces the 4-tier audience-graduated
+  `0-presentation.md` so a third party can engage at TL;DR (exec),
+  strategic-frame (architect), per-BC (developer), or appendix (auditor)
+  depth without walking the full ceremony evidence trail.
+  Derivative-only — never originates a fact, every claim cites
+  upstream verbatim. `--resync` walks the impact matrix backwards
+  per-tier. See `kb/patterns/model-presentation-tiers.md` for the
+  4-tier curation and pairing with `kb/patterns/ddd-diagram-catalog.md`.

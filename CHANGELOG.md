@@ -5,6 +5,48 @@ All notable changes to ddd-agent are documented here. Format follows
 follows [Semantic Versioning](https://semver.org/) loosely (skill bundle
 rather than a library).
 
+## [Unreleased]
+
+### Added — Prose presentation companion
+- `/ddd:present` slash command — produces the 4-tier audience-graduated
+  prose companion `projects/<slug>/0-presentation.md`. Solves the
+  third-party-handoff problem: artifacts produced by `/ddd:ideate` are
+  process records (preserve sparring trail) and don't read well cold.
+  The presentation is a single-file derivative cover sheet with
+  reader-controlled depth — TL;DR for execs, strategic frame for
+  architects, per-BC detail for developers, link-only appendix for
+  auditors. Derivative-only — never originates a fact, every claim
+  cites upstream verbatim.
+- `kb/patterns/model-presentation-tiers.md` — first-class canonical
+  reference for the 4-tier curation: audience labels, length budgets,
+  required upstream artifacts per tier, skip rules, resync semantics,
+  pairing with `kb/patterns/ddd-diagram-catalog.md`.
+- `skills/model-presentation/SKILL.md` — operational driver (5-phase
+  flow: Discovery → Recommend → Synthesise → Hand-off → Suggest).
+  Mirrors the `/ddd:diagrams` shape: interview-driven Tier-1 default
+  with explicit skip reasoning, `--resync` mode for cascade-aware
+  per-tier drift detection, `--tier 1|1+2|all|custom` pre-selection.
+- `kb/patterns/artifact-impact-matrix.md` — extended to register
+  `0-presentation.md` as a downstream consumer. Every prose row in
+  the matrix now carries a `0-presentation.md (T<n>)` entry naming
+  the affected tier IDs, parallel to the existing `0-diagrams/* (T<n.n>)`
+  entries. New `## Presentation as a downstream type` section
+  documents the cascade detection (`presentation-affected:` manifest
+  row field), tier-aware drift table, resync mechanics, and
+  independence from the diagrams skill.
+- `CLAUDE.md` — directory map updated: `0-` prefix now documented as
+  reserved for derivative cross-cutting outputs (presentation +
+  diagrams). New `/ddd:present` command added to the Commands list.
+
+### Notes on scope
+- No new agent introduced. Synthesis is deterministic enough that
+  the skill suffices; if iterative third-party-readability QA is
+  needed later, a `presentation-reviewer` agent is the natural
+  extension point.
+- No version bump. This entry sits in [Unreleased] until the next
+  tag; a MINOR bump to v1.1.0 is appropriate when released since this
+  is an additive ceremony.
+
 ## [1.0.1] — 2026-04-26
 
 Hotfix for v1.0.0 plugin manifest validation. No behavioural changes.
