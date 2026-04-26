@@ -13,8 +13,11 @@ projects/*
 *.swp
 *~
 
-# Claude Code local session state
-.claude/settings.local.json
+# Claude Code local session state — and dev-time .claude/ symlinks for
+# in-repo testing (the canonical plugin layout lives at root: agents/,
+# skills/, commands/). Never commit .claude/ — keeping it out is what
+# makes the v1.0.1 plugin-root layout the single source of truth.
+.claude/
 
 # Defensive — environment files, build artifacts, logs
 .env

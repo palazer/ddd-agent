@@ -117,19 +117,37 @@ cp -r /tmp/ddd-agent/kb               ~/code/your-project/.claude/kb
 
 Trade-off: you lose the ability to pull upstream updates without re-copying.
 
-### Option D — Use this repo *as* your project root
+### Option D — Use this repo *as* your project root (also: the author dev loop)
 
-If you want to keep all your ideation artifacts here and not symlink anywhere:
+If you want to keep all your ideation artifacts here, *or* you're a
+contributor iterating on the plugin itself, you need one local symlink dance
+because Claude Code only auto-discovers skills/agents/commands from
+`.claude/<dir>/` in the current project — and v1.0 publishes the plugin
+layout at the repo root (per the plugin schema), not under `.claude/`. The
+fix is a four-line bootstrap, after which edits to `agents/`, `skills/`, or
+`commands/` are picked up live with no install/cache step:
 
 ```bash
 git clone https://github.com/palazer/ddd-agent ~/ddd-sparring
 cd ~/ddd-sparring
+
+# Bridge the plugin-root layout back into Claude Code's project loader.
+# .claude/ is gitignored, so these stay local to your machine.
+mkdir -p .claude/commands
+ln -s ../agents          .claude/agents
+ln -s ../skills          .claude/skills
+ln -s ../../commands/ddd .claude/commands/ddd
+
 claude
 /ddd:ideate "your domain pitch goes here"
 ```
 
 Each new ideation lands under `projects/<slug>/`, which is gitignored — so
 your sparring artifacts stay local while the upstream skills remain pristine.
+Authors: this is the equivalent of `pip install -e` for the plugin — every
+edit to a file under `agents/`, `skills/`, or `commands/` is read live by
+Claude Code. To dogfood the consumer-shape install in *other* projects,
+follow Option A there.
 
 ## Usage
 
