@@ -1,0 +1,129 @@
+<!--
+Template for projects/<slug>/0-diagrams/README.md (the per-folder index)
+
+Substitution rules:
+  {{PROJECT_NAME}}        → project name
+  {{EMITTED_DIAGRAMS}}    → array of {N, file, title, tier, audience, fast_path_position}
+                            sorted by N
+  {{TOTAL_COUNT}}         → integer count
+  {{DATE}}                → YYYY-MM-DD
+-->
+# 0 — Diagrams
+
+**Purpose:** A visual complement to the prose in `1-cynefin-framing.md` → `7-adr/`. Each diagram closes a specific prose gap; none duplicates the written artifacts.
+
+**Coverage:** {{TOTAL_COUNT}} diagrams shipped by `/ddd:diagrams`. The skill chose this set based on detected signals in the project (see Phase 2 recommendation transcript in the run log). Skipped IDs and reasons are recorded in the [diagram catalog](../../../kb/patterns/ddd-diagram-catalog.md).
+
+**Numbering:** The `0-` folder prefix puts this folder above `1-cynefin-framing.md` alphabetically — visuals first when a reader opens `projects/{{PROJECT_NAME}}/`. File numbers are emit order; you can renumber by hand if you need a different reading order, but `/ddd:diagrams --resync` looks up files by their footer tier ID (`T<n.n>`), not by filename, so renumbering is safe.
+
+---
+
+## Reading order
+
+If you are new to {{PROJECT_NAME}}, read the diagrams roughly in the order below. Times are approximate.
+
+### 🎯 Fast path (15 min — if you only have one sitting)
+
+| # | File | What you'll learn | Audience tilt |
+|---|------|-------------------|---------------|
+{{#FAST_PATH_DIAGRAMS}}
+| {{N}} | [`{{file}}`](./{{file}}) | {{summary}} | {{audience}} |
+{{/FAST_PATH_DIAGRAMS}}
+
+### 🧭 Strategic (read these when deciding *where to invest*)
+
+| # | File | What you'll learn | Audience tilt |
+|---|------|-------------------|---------------|
+{{#STRATEGIC_DIAGRAMS}}
+| {{N}} | [`{{file}}`](./{{file}}) | {{summary}} | {{audience}} |
+{{/STRATEGIC_DIAGRAMS}}
+
+### 🏗️ Conceptual (the things in the domain)
+
+| # | File | What you'll learn | Audience tilt |
+|---|------|-------------------|---------------|
+{{#CONCEPTUAL_DIAGRAMS}}
+| {{N}} | [`{{file}}`](./{{file}}) | {{summary}} | {{audience}} |
+{{/CONCEPTUAL_DIAGRAMS}}
+
+### 🔄 Behavior & flow
+
+| # | File | What you'll learn | Audience tilt |
+|---|------|-------------------|---------------|
+{{#BEHAVIOR_DIAGRAMS}}
+| {{N}} | [`{{file}}`](./{{file}}) | {{summary}} | {{audience}} |
+{{/BEHAVIOR_DIAGRAMS}}
+
+### 🔌 System integration (where the outside world meets {{PROJECT_NAME}})
+
+| # | File | What you'll learn | Audience tilt |
+|---|------|-------------------|---------------|
+{{#INTEGRATION_DIAGRAMS}}
+| {{N}} | [`{{file}}`](./{{file}}) | {{summary}} | {{audience}} |
+{{/INTEGRATION_DIAGRAMS}}
+
+### 🏛️ Reference & governance
+
+| # | File | What you'll learn | Audience tilt |
+|---|------|-------------------|---------------|
+{{#REFERENCE_DIAGRAMS}}
+| {{N}} | [`{{file}}`](./{{file}}) | {{summary}} | {{audience}} |
+{{/REFERENCE_DIAGRAMS}}
+
+---
+
+## Conventions
+
+### Format
+
+Each diagram ships as a **paired set** when rendered:
+
+- `<NN>-<slug>.md` — canonical source (Markdown with one or more Mermaid blocks, narrative frame, legend, back-links). Diff-friendly.
+- `<NN>-<slug>.svg` — exported rendering. Produced by [`render.sh`](./render.sh).
+
+GitHub renders Mermaid in `.md` files natively, so SVG is **only needed** for embedding into decks, PDFs, or external shares.
+
+### Color legend
+
+The skill uses this default palette (override by editing the diagrams):
+
+| Color | Meaning |
+|-------|---------|
+| 🟥 Red | **Core** — strategic differentiator |
+| 🟧 Orange | **Supporting** — enabler |
+| 🟦 Blue | **H2 named** — deferred but planned |
+| ⬜ Gray | **External or deferred-deferred** |
+
+### Back-links
+
+Every diagram links back to:
+- The **source prose artifact(s)** in `../`.
+- The **glossary** at `../4-glossary.md`.
+- The **strategic rationale** (Cynefin framing or ADRs).
+
+### Audience tilt
+
+Each diagram declares its tilt:
+- **Stakeholder-tilted**: plain-language labels for partners and investors.
+- **Engineer-tilted**: exact glossary terms, event/state names, SLO numbers.
+- **Mixed**: exact terms in the body, plain-language in headlines and legends.
+
+---
+
+## Maintenance
+
+### Re-rendering after edits
+
+Run `./render.sh` to regenerate all SVGs, or `./render.sh <NN>` for a single file. SVGs are under git in this convention; commit them alongside the `.md` source.
+
+### Drift detection after revisions
+
+When `/ddd:revise` classifies a change as `cascading`, the manifest row will list `diagrams-affected: [T<n.n>, ...]`. Run `/ddd:diagrams --resync` to walk the affected list and refresh those diagrams (per-diagram gate). Per `kb/patterns/artifact-impact-matrix.md § Diagrams as a downstream type`.
+
+### Adding new diagrams
+
+If the project matures past a Tier 2/3/4 threshold (e.g. you cross 10 ADRs and now want T4.2 ADR Dependency Graph), simply re-run `/ddd:diagrams`. Existing diagrams are not regenerated; new ones are added.
+
+---
+
+*Generated by /ddd:diagrams · {{TOTAL_COUNT}} diagrams · Last updated: {{DATE}}*

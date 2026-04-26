@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Read CLAUDE.md hard rules first
+    url: https://github.com/your-username/ddd-agent/blob/main/CLAUDE.md
+    about: Many "is this in scope?" questions are answered by the six hard rules in CLAUDE.md. Worth a 2-minute read before opening an issue.
+  - name: Browse the knowledge base
+    url: https://github.com/your-username/ddd-agent/tree/main/kb
+    about: If you're looking for canonical DDD references (Evans, Vernon, Fowler, Verraes, ...), they're under kb/.

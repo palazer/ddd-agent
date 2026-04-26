@@ -1,0 +1,133 @@
+<!--
+Template for T3.3 — Authorization / Visibility Matrix
+
+Substitution rules:
+  {{N}}                    → 2-digit emit number
+  {{PROJECT_NAME}}         → project name
+  {{COLUMN_KIND}}          → "Aggregate" or "BC" — which scope this matrix uses
+  {{ROLES}}                → array; each: { name, scope_note,
+                                             permissions[] }
+                             permissions[] = { column_id, level ∈ {R, W, RW, —} }
+  {{COLUMNS}}              → array of { id, name } (the aggregates or BCs)
+  {{ROLE_COUNT}}           → integer
+  {{COLUMN_COUNT}}         → integer
+  {{HIGH_PRIVILEGE_PAIRS}} → array of {role_id, column_id, label} where level=="RW"
+  column_is_aggregate      → boolean derived from COLUMN_KIND.
+                             True iff COLUMN_KIND == "Aggregate".
+                             Used as a Mustache section + inverse in the
+                             "How to read this" body to swap the article
+                             ("an aggregate" vs "a bounded context").
+  {{KEY_NARRATIVE}}        → derived from glossary role entries + canvases'
+                             § Domain Roles + governance ADRs
+  {{PROSE_SOURCES}}        → bracketed paths to glossary + canvases + role ADRs
+  {{DATE}}                 → YYYY-MM-DD
+
+Note: HYBRID template — markdown table is canonical, companion flowchart shows
+only RW (high-privilege) edges to keep the visual readable.
+COLUMN_KIND: pick "Aggregate" when roles are scoped to specific aggregates
+(finer-grained authorisation); pick "BC" when roles are scoped at the BC level.
+-->
+# D{{N}} — Authorization / Visibility Matrix
+
+**Audience:** Engineer + Compliance / Security (least-privilege conversations).
+**When to look at this:** When designing role grants, reviewing audit logs, or answering "who can see X?". Required reading before any RBAC migration.
+**Prose gap closed:** Glossary defines roles in isolation; canvases describe domain roles per BC; this diagram shows the **role × {{COLUMN_KIND}} permission grid** in one frame.
+
+---
+
+## Who can read or write each {{COLUMN_KIND}}
+
+### Reading order: matrix first, graph second
+
+The **table below is canonical** (every role × every {{COLUMN_KIND}}). The
+**companion flowchart** highlights only `RW` cells — the high-privilege
+grants that warrant the strongest review.
+
+|  | {{#COLUMNS}}**{{name}}** \| {{/COLUMNS}}
+|---|{{#COLUMNS}}---|{{/COLUMNS}}
+{{#ROLES}}
+| **{{name}}**<br/><sub>{{scope_note}}</sub> | {{#permissions}}{{level}} \| {{/permissions}}
+{{/ROLES}}
+
+**Cell legend:** `R` = read · `W` = write · `RW` = read+write · `—` = no access
+
+```mermaid
+flowchart LR
+    {{#ROLES}}
+    {{role_id}}(["<b>{{name}}</b>"]):::role
+    {{/ROLES}}
+
+    {{#COLUMNS}}
+    {{col_id}}["<b>{{name}}</b>"]:::scope
+    {{/COLUMNS}}
+
+    {{#HIGH_PRIVILEGE_PAIRS}}
+    {{role_id}} ==>|"{{label}}"| {{col_id}}
+    {{/HIGH_PRIVILEGE_PAIRS}}
+
+    classDef role fill:#fff7d6,stroke:#b78a00,color:#222
+    classDef scope fill:#e6f0ff,stroke:#2961b8,color:#222
+```
+
+> Companion graph shows only `RW` (read+write) grants — the
+> high-privilege relationships. `R` and `W` cells live in the matrix
+> only.
+
+---
+
+## How to read this
+
+- Each **row is a role** — a named principal in the authorisation model
+  (not an individual user). Roles come from the glossary and canvas
+  § Domain Roles fields.
+- Each **column is {{#column_is_aggregate}}an aggregate{{/column_is_aggregate}}{{^column_is_aggregate}}a bounded context{{/column_is_aggregate}}** — the scope at which permissions
+  are granted.
+- A role with `RW` against many columns is a **privilege escalation
+  smell** — split the role, or scope its writes more narrowly.
+- A column with `RW` from many roles is a **shared mutable resource** —
+  contention point; consider event sourcing or single-writer redesign.
+- A row of all `—` is a **dormant role** — either remove the role or
+  document why it's reserved for a future BC.
+
+### Key narrative
+
+{{KEY_NARRATIVE}}
+
+### What this diagram deliberately does *not* show
+
+- **Per-instance ACLs** — this is role-by-{{COLUMN_KIND}} grain. Per-record
+  permissions (e.g. "user X owns record Y") live in domain-event
+  invariants, not in this matrix.
+- **Authentication mechanism** — see ADRs for how roles are claimed
+  (OAuth scopes, JWT claims, session cookies).
+- **Whether the role *exists* in a given BC** — see Actor-Context Matrix
+  (`<NN>-actor-context-matrix.md`) for the existence question; this
+  diagram answers the *permission* question.
+
+---
+
+## Legend
+
+| Symbol | Meaning |
+|--------|---------|
+| Yellow node | Role (named principal) |
+| Blue node | {{COLUMN_KIND}} scope (aggregate or BC) |
+| `==>` edge | High-privilege `RW` grant |
+| `R` cell | Role can read this scope |
+| `W` cell | Role can write but not read back |
+| `RW` cell | Role can read and write |
+| `—` cell | No access — least-privilege default |
+
+**Totals:** {{ROLE_COUNT}} roles × {{COLUMN_COUNT}} {{COLUMN_KIND}}s
+
+---
+
+## Back-links
+
+- **Prose sources:** {{PROSE_SOURCES}}
+- **Glossary:** [`../4-glossary.md`](../4-glossary.md) (role-tagged entries)
+- **Pattern reference:** Khononov, *Learning DDD* — governance lens (`kb/voices/khononov-pragmatic-strategic.md`)
+
+---
+
+*{{N}} · Generated by /ddd:diagrams · Cited from kb/patterns/ddd-diagram-catalog.md#T3.3 · Last updated: {{DATE}}*

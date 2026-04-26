@@ -1,0 +1,147 @@
+<!--
+Template for T4.1 — Coupling & Volatility Matrix
+
+Substitution rules:
+  {{N}}                    → 2-digit emit number
+  {{PROJECT_NAME}}         → project name
+  {{BCS}}                  → array; each: { id, name, volatility ∈ {high, med, low} }
+                             Used to build both the row and column header.
+  {{COUPLING_CELLS}}       → array; each: { row_bc_id, col_bc_id,
+                                              strength ∈ {high, med, low, —},
+                                              volatility_delta ∈ {Δhigh, Δmed, Δlow, "—"} }
+                             For row_bc_id == col_bc_id the cell shows the
+                             diagonal volatility (`self`); strength is "—".
+  ROWS                     → row-shape derived from BCS × COUPLING_CELLS:
+                             [{ id, name, volatility, cells: [
+                                { row_bc_id, col_bc_id, strength,
+                                  volatility_delta, is_diagonal }
+                             ] }]
+                             The agent precomputes this row-shape so the
+                             template can render NxN with one nested loop.
+  {{HIGH_COUPLING_PAIRS}}  → flat array of {a_id, b_id, label, volatility_delta}
+                             where strength == "high"; used for the companion graph.
+  {{BC_COUNT}}             → integer
+  {{HIGH_COUPLING_COUNT}}  → integer (number of high-coupling pairs)
+  {{KEY_NARRATIVE}}        → derived from 7-context-map.md edge analysis +
+                             Khononov-cited prose in 5-bc-candidates.md or canvases
+  {{PROSE_SOURCES}}        → bracketed paths to 7-context-map.md + canvases
+                             with Khononov references
+  {{DATE}}                 → YYYY-MM-DD
+
+Note: HYBRID template — N×N markdown table is canonical. The companion
+flowchart shows ONLY high-coupling pairs (volatility delta on edge label) so
+the visual stays readable when BC count > 6.
+-->
+# D{{N}} — Coupling & Volatility Matrix
+
+**Audience:** Architect (re-modelling conversations).
+**When to look at this:** When considering a BC merge, a BC split, a Separate Ways re-classification, or estimating the blast radius of a change. Also: post-incident reviews where coupling was implicated.
+**Prose gap closed:** `7-context-map.md` lists edges as a flat table; this matrix shows the **N×N coupling distribution** with volatility deltas, exposing pairs that should not be coupled given how differently they change.
+
+---
+
+## How tightly each pair of bounded contexts is coupled, and whether they change together
+
+### Reading order: matrix first, graph second
+
+The **table below is canonical** (every BC × every BC). The **companion
+flowchart** highlights only `high`-coupling pairs (the design risk
+hotspots).
+
+|  | {{#BCS}}**{{name}}**<br/><sub>vol: {{volatility}}</sub> \| {{/BCS}}
+|---|{{#BCS}}---|{{/BCS}}
+{{#ROWS}}
+| **{{name}}**<br/><sub>vol: {{volatility}}</sub> | {{#cells}}{{#is_diagonal}}—{{/is_diagonal}}{{^is_diagonal}}{{strength}} ({{volatility_delta}}){{/is_diagonal}} \| {{/cells}}
+{{/ROWS}}
+
+**Cell legend:** `<strength> (<volatility_delta>)` where strength ∈
+{`high`, `med`, `low`, `—`} and volatility_delta is the absolute
+difference between the two BCs' change rates.
+
+```mermaid
+flowchart LR
+    {{#BCS}}
+    {{id}}["<b>{{name}}</b><br/><i>vol: {{volatility}}</i>"]:::vol_{{volatility}}
+    {{/BCS}}
+
+    {{#HIGH_COUPLING_PAIRS}}
+    {{a_id}} ===|"{{label}}<br/>{{volatility_delta}}"| {{b_id}}
+    {{/HIGH_COUPLING_PAIRS}}
+
+    classDef vol_high fill:#ffd6d6,stroke:#c23838,color:#222
+    classDef vol_med fill:#fff7d6,stroke:#b78a00,color:#222
+    classDef vol_low fill:#d6f5d6,stroke:#2e8b2e,color:#222
+```
+
+**Total high-coupling pairs:** {{HIGH_COUPLING_COUNT}} of {{BC_COUNT}} BCs
+
+---
+
+## How to read this
+
+- Each **cell** answers two questions about a pair of BCs: (1) how
+  tightly are they coupled, and (2) how differently do they change?
+- **High coupling × high volatility delta** is the primary risk pattern
+  Khononov names: two BCs that change at very different rates yet
+  depend on each other will tear the architecture apart over time.
+  Consider Anti-Corruption Layer or Separate Ways.
+- **High coupling × low volatility delta** is acceptable: they're tightly
+  bound but they evolve together. Often a sign that what looks like two
+  BCs is actually one (consider merging).
+- **Low coupling × high volatility delta** is healthy — independent
+  evolution is what BCs are *for*.
+- **Diagonal cells** show each BC's own volatility — the column/row
+  header carries this for at-a-glance scanning.
+
+### Khononov heuristic
+
+> "Coupling is the strength of the relationship between two
+> components. Two components that change together should be coupled;
+> two components that change apart should be decoupled. Coupling
+> mismatched with co-change is the most expensive design mistake."
+>
+> — Khononov, *Learning DDD* ch. 8 (paraphrase, see
+> [`kb/voices/khononov-pragmatic-strategic.md`](../../../kb/voices/khononov-pragmatic-strategic.md))
+
+### Key narrative
+
+{{KEY_NARRATIVE}}
+
+### What this diagram deliberately does *not* show
+
+- **The integration pattern per edge** — see Bounded Context Map
+  (`02-bounded-context-map.md`) for SK / OHS / PL / ACL / CF / SW
+  classification.
+- **Why each pair has the volatility delta it does** — see canvas
+  § Business Decisions for change drivers per BC.
+- **Recommended remediation** — that's an ADR-level decision; the
+  matrix surfaces the risk, an ADR records the response.
+
+---
+
+## Legend
+
+| Symbol | Meaning |
+|--------|---------|
+| Cell `high (Δhigh)` | High-risk pair — strong coupling, very different change rates |
+| Cell `high (Δlow)` | Tight pair that co-evolves — possibly one BC, not two |
+| Cell `low (Δhigh)` | Healthy decoupling — BCs evolve independently |
+| Cell `—` | Diagonal or no coupling |
+| 🟥 BC node | High volatility — changes frequently |
+| 🟧 BC node | Medium volatility |
+| 🟢 BC node | Low volatility — stable |
+| `===` edge | High-coupling relationship (shown only for high-strength pairs) |
+
+---
+
+## Back-links
+
+- **Prose sources:** {{PROSE_SOURCES}}
+- **Glossary:** [`../4-glossary.md`](../4-glossary.md)
+- **Pattern reference:** Khononov, *Learning DDD* ch. 8 — Coupling
+- **Voice reference:** [`kb/voices/khononov-pragmatic-strategic.md`](../../../kb/voices/khononov-pragmatic-strategic.md)
+- **Companion diagram:** Bounded Context Map (`02-bounded-context-map.md`) names the integration patterns this matrix scores
+
+---
+
+*{{N}} · Generated by /ddd:diagrams · Cited from kb/patterns/ddd-diagram-catalog.md#T4.1 · Last updated: {{DATE}}*

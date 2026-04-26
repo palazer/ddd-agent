@@ -1,0 +1,41 @@
+name: Question / discussion
+description: Ask a question about how to use the agent, or discuss a DDD modelling decision.
+title: "[Question]: "
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For open-ended discussion (e.g. "how do I model X?"), prefer the
+        **Discussions** tab if enabled. Use this template for things you'd
+        want a maintainer to answer in a single response.
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Question type
+      options:
+        - How to use a ceremony / skill
+        - DDD modelling question (the agent gave advice, I want a sanity check)
+        - Installation / setup
+        - Compatibility (Claude Code version, OS, surface)
+        - Philosophy / scope
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Your question
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context (optional)
+      description: |
+        What have you tried? What's the domain-shape you're sparring about? Paste
+        relevant snippets from your `projects/<slug>/` artifacts if useful.
+      render: markdown

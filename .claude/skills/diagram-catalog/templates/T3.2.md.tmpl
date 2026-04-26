@@ -1,0 +1,130 @@
+<!--
+Template for T3.2 — Failure / Fallback Decision Tree
+
+Substitution rules:
+  {{N}}                    → 2-digit emit number
+  {{PROJECT_NAME}}         → project name
+  {{POLICY_TITLE}}         → e.g. "Payment provider degradation policy"
+  {{TRIGGER_EVENT}}        → glossary event/condition that opens the tree
+                             (e.g. "PaymentProviderTimeout")
+  {{TRIGGER_DESCRIPTION}}  → one-line description of when this tree applies
+  {{ADR_REF}}              → the ADR file basename governing this policy
+                             (e.g. "0008-payment-fallback-policy.md")
+  {{BRANCHES}}              → array; each: { id, condition, label,
+                                              children[] (recursive) }
+                             A leaf branch has children == [] and an `outcome`
+                             field with terminal_class.
+  {{TERMINAL_OUTCOMES}}    → flattened list; each: { id, label,
+                                                     terminal_class ∈
+                                                     {happy, degraded, failed} }
+  EDGES                    → flattened parent→child edge list derived from
+                             BRANCHES recursion: [{ from_id, to_id, label }].
+                             The agent flattens the recursive tree because
+                             Mermaid flowcharts do not support nested
+                             subgraphs of decisions natively.
+  {{KEY_NARRATIVE}}        → derived from the governing ADR's § Decision and
+                             § Consequences sections
+  {{PROSE_SOURCES}}        → bracketed paths to ADR + relevant 6-contexts/*.md
+                             (canvas § Assumptions, § Open questions for fallbacks)
+  {{DATE}}                 → YYYY-MM-DD
+
+Note: Mermaid flowcharts do not support nested decision trees natively. Branches
+are flattened to nodes with explicit edges; depth is encoded in `id` (e.g. B1,
+B1a, B1a1). Terminal-class CSS classes colour leaves: green=happy, amber=degraded,
+red=failed.
+-->
+# D{{N}} — Failure / Fallback Decision Tree: {{POLICY_TITLE}}
+
+**Audience:** Engineer + Operations (incident response and on-call playbook).
+**When to look at this:** When `{{TRIGGER_EVENT}}` fires — to know which path the system takes, what the user sees, and which terminal state is acceptable.
+**Prose gap closed:** ADR `{{ADR_REF}}` describes the policy in prose; this diagram shows the **branching logic** so on-call engineers can scan it under pressure.
+
+---
+
+## What happens when {{TRIGGER_EVENT}} fires
+
+> **Trigger:** {{TRIGGER_DESCRIPTION}}
+> **Governed by:** [`{{ADR_REF}}`](../7-adr/{{ADR_REF}})
+
+```mermaid
+flowchart TD
+    ROOT(["<b>{{TRIGGER_EVENT}}</b>"]):::trigger
+
+    {{#BRANCHES}}
+    {{id}}{"<b>{{condition}}</b><br/>{{label}}"}
+    {{/BRANCHES}}
+
+    {{#TERMINAL_OUTCOMES}}
+    {{id}}["{{label}}"]:::{{terminal_class}}
+    {{/TERMINAL_OUTCOMES}}
+
+    %% Edges (parent → child) — the tree topology
+    {{#EDGES}}
+    {{from_id}} -->|"{{label}}"| {{to_id}}
+    {{/EDGES}}
+
+    classDef trigger fill:#fff7d6,stroke:#b78a00,stroke-width:2px,color:#222
+    classDef happy fill:#d6f5d6,stroke:#2e8b2e,color:#222
+    classDef degraded fill:#ffe4b5,stroke:#c8740a,color:#222
+    classDef failed fill:#ffd6d6,stroke:#c23838,color:#222
+```
+
+---
+
+## How to read this
+
+- **Diamond nodes** are decisions — a runtime condition the system
+  evaluates. Edge labels (`yes`/`no`/numeric thresholds) make the
+  condition concrete.
+- **Rectangle nodes (coloured)** are **terminal outcomes** — the system
+  has settled into one of three classes:
+  - 🟢 **Happy** — full success path; user sees nothing unusual.
+  - 🟧 **Degraded** — partial success; user may see a delay, a
+    fallback option, or a reduced feature set. Acceptable per the ADR.
+  - 🟥 **Failed** — full failure; user sees an error and a recovery
+    path. Acceptable only because the ADR considered it less bad than
+    the alternative.
+- The **path your incident took** is the most useful question this
+  diagram answers — log entries should reference the terminal-outcome
+  node ID.
+
+### Key narrative
+
+{{KEY_NARRATIVE}}
+
+### What this diagram deliberately does *not* show
+
+- **The golden path itself** — see Golden-path Sequence
+  (`<NN>-golden-path-*.md`). This diagram shows what happens when the
+  golden path fails.
+- **Recovery / retry policy timing** — see the ADR's § Decision section
+  for retry delays, jitter, circuit-breaker open/close thresholds.
+- **Cross-BC compensation** — if a degraded outcome triggers a
+  compensating saga in another BC, that lives in a separate sequence
+  diagram.
+
+---
+
+## Legend
+
+| Symbol | Meaning |
+|--------|---------|
+| Yellow rounded rectangle | Trigger event (root of the tree) |
+| Diamond | Decision node — runtime condition |
+| 🟢 Green leaf | Happy terminal outcome |
+| 🟧 Amber leaf | Degraded terminal outcome (acceptable) |
+| 🟥 Red leaf | Failed terminal outcome (acceptable per ADR) |
+| Edge label | The condition that selects this branch (e.g. `yes`, `no`, `>3 retries`) |
+
+---
+
+## Back-links
+
+- **Prose sources:** {{PROSE_SOURCES}}
+- **Glossary:** [`../4-glossary.md`](../4-glossary.md)
+- **Governing ADR:** [`../7-adr/{{ADR_REF}}`](../7-adr/{{ADR_REF}})
+- **Pattern reference:** Generic decision-tree pattern — no single canonical source; ADR is the project-specific authority
+
+---
+
+*{{N}} · Generated by /ddd:diagrams · Cited from kb/patterns/ddd-diagram-catalog.md#T3.2 · Last updated: {{DATE}}*

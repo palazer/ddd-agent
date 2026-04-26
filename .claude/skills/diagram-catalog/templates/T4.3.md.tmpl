@@ -1,0 +1,142 @@
+<!--
+Template for T4.3 — Domain Stories Pictograph (Mermaid approximation)
+
+Substitution rules:
+  {{N}}                    → 2-digit emit number
+  {{PROJECT_NAME}}         → project name
+  {{STORY_TITLE}}          → e.g. "Customer onboards via partner"
+  {{STORY_SLUG}}           → kebab-case slug from STORY_TITLE
+  {{STORY_NODES}}          → array; each: { id, kind ∈ {actor, work_object, activity},
+                                              label, emoji_glyph,
+                                              is_actor, is_work_object, is_activity }
+                             emoji_glyph ∈ {👤 (actor), 📄 (work_object), ⚙ (activity)}
+                             plus role-specific glyphs the agent picks from glossary.
+                             The three boolean flags `is_actor`, `is_work_object`,
+                             `is_activity` are precomputed from `kind` so the
+                             template can render the right Mermaid shape per
+                             node with a Mustache section per kind.
+  {{ACTOR_COUNT}}          → integer (count of STORY_NODES with kind=="actor")
+  {{WORK_OBJECT_COUNT}}    → integer (count with kind=="work_object")
+  {{ACTIVITY_COUNT}}       → integer (count with kind=="activity")
+  {{NUMBERED_STEPS}}       → array; each: { from_id, to_id, step_number,
+                                              label }
+                             step_number is integer (1-based).
+  {{NODE_COUNT}}           → integer
+  {{STEP_COUNT}}           → integer
+  {{KEY_NARRATIVE}}        → derived from 3-domain-stories.md story prose
+  {{PROSE_SOURCES}}        → bracketed paths to 3-domain-stories.md
+  {{DATE}}                 → YYYY-MM-DD
+
+Note: This is the Mermaid APPROXIMATION of Hofer/Schwentner pictographs. True
+Domain Storytelling uses illustrated icons for actors/work objects/activities
+that Mermaid cannot render. The approximation banner below this comment is
+mandatory — do not remove.
+
+The agent is encouraged to use emoji glyphs in node labels (👤 for actors,
+📄 for documents/work-objects, ⚙ for activities/systems) since Mermaid's
+flowchart shape vocabulary is too limited to mimic the canonical icons.
+-->
+# D{{N}} — Domain Stories Pictograph: {{STORY_TITLE}}
+
+**Audience:** Mixed (stakeholder + facilitator). Best read alongside the prose story.
+**When to look at this:** When walking through `{{STORY_TITLE}}` in a workshop, or when a new joiner needs the narrative shape of the workflow before reading prose.
+**Prose gap closed:** `3-domain-stories.md` carries the prose; this diagram approximates the **iconic pictograph view** that Hofer & Schwentner's notation calls for.
+
+---
+
+> ⚠ **Approximation only.** Mermaid cannot render true Domain Storytelling
+> pictographs (illustrated icons for actors / work objects / activities). This
+> file uses emoji glyphs and coloured node classes as a stand-in. For
+> publication-quality pictographs, transcribe to Excalidraw using the
+> [Domain Storytelling icon set](https://domainstorytelling.org). See
+> [`kb/ceremonies/domain-storytelling.md`](../../../kb/ceremonies/domain-storytelling.md)
+> for the canonical notation.
+
+---
+
+## How {{STORY_TITLE}} unfolds
+
+```mermaid
+flowchart LR
+    {{#STORY_NODES}}
+    {{#is_actor}}{{id}}(["{{emoji_glyph}} <b>{{label}}</b>"]):::actor{{/is_actor}}
+    {{#is_work_object}}{{id}}["{{emoji_glyph}} {{label}}"]:::workObject{{/is_work_object}}
+    {{#is_activity}}{{id}}{"{{emoji_glyph}} {{label}}"}:::activity{{/is_activity}}
+    {{/STORY_NODES}}
+
+    {{#NUMBERED_STEPS}}
+    {{from_id}} -->|"{{step_number}}. {{label}}"| {{to_id}}
+    {{/NUMBERED_STEPS}}
+
+    classDef actor fill:#fff7d6,stroke:#b78a00,stroke-width:2px,color:#222
+    classDef workObject fill:#e6f0ff,stroke:#2961b8,color:#222
+    classDef activity fill:#f0e6ff,stroke:#7a3eb8,color:#222
+```
+
+---
+
+## How to read this
+
+- **Numbers on edges** are the chronological step order — read them in
+  ascending order to walk the story.
+- **Yellow rounded nodes (👤)** are actors — humans or autonomous
+  systems that *do* things.
+- **Blue rectangles (📄)** are work objects — documents, records, or
+  artifacts the actors handle.
+- **Purple diamonds (⚙)** are activities — verb-named units of work
+  that transform or move work objects.
+- The story is **deliberately linear** — Domain Storytelling avoids
+  branching because branches obscure the typical happy-path narrative.
+  Variants and edge cases are separate stories.
+
+### Counts
+
+- **Nodes:** {{NODE_COUNT}} ({{ACTOR_COUNT}} actors, {{WORK_OBJECT_COUNT}}
+  work objects, {{ACTIVITY_COUNT}} activities)
+- **Steps:** {{STEP_COUNT}}
+
+### Key narrative
+
+{{KEY_NARRATIVE}}
+
+### What this diagram deliberately does *not* show
+
+- **Conditional branches or failure paths** — Domain Storytelling is
+  happy-path only. Failures live in T3.2 fallback decision trees or in
+  the canvas § Open Questions.
+- **Aggregate or BC structure** — see Aggregate Conceptual Model
+  (`03-aggregate-conceptual-model.md`) for the static model.
+- **Time spans / SLAs** — the numbered steps are sequential, not
+  durations.
+- **Other stories in the same domain** — each story gets its own T4.3
+  file (`<NN>-domain-stories-<story-slug>.md`).
+
+---
+
+## Legend
+
+| Glyph / shape | Domain Storytelling concept | Mermaid approximation |
+|---------------|------------------------------|------------------------|
+| 👤 yellow rounded | Actor (Person, Group, IT-System) | classDef `actor` |
+| 📄 blue rectangle | Work Object (document, record, artifact) | classDef `workObject` |
+| ⚙ purple diamond | Activity (verb-phrase, work being done) | classDef `activity` |
+| Numbered edge | Chronological step in the story | `-->|"N. label"|` |
+
+The canonical Hofer/Schwentner notation uses illustrated icons for these
+roles (a stick figure, a folded document, a gear). Mermaid does not
+render those — the colour-coded classes above are this skill's
+honest approximation.
+
+---
+
+## Back-links
+
+- **Prose sources:** {{PROSE_SOURCES}}
+- **Glossary:** [`../4-glossary.md`](../4-glossary.md)
+- **Ceremony reference:** [`kb/ceremonies/domain-storytelling.md`](../../../kb/ceremonies/domain-storytelling.md)
+- **Pattern reference:** Hofer & Schwentner, *Domain Storytelling* (Addison-Wesley, 2021)
+- **Canonical pictograph icons:** https://domainstorytelling.org
+
+---
+
+*{{N}} · Generated by /ddd:diagrams · Cited from kb/patterns/ddd-diagram-catalog.md#T4.3 · Last updated: {{DATE}}*

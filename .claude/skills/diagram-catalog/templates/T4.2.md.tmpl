@@ -1,0 +1,145 @@
+<!--
+Template for T4.2 — ADR Dependency Graph
+
+Substitution rules:
+  {{N}}                    → 2-digit emit number
+  {{PROJECT_NAME}}         → project name
+  {{ADRS}}                 → array; each: { id (NNNN), title, status,
+                                              status_class ∈ {accepted, proposed,
+                                                              superseded, rejected,
+                                                              deprecated},
+                                              relations[] }
+                             relations[] = { kind ∈ {supersedes, refines,
+                                                      depends-on, conflicts-with},
+                                              target_id (NNNN) }
+  {{ADR_COUNT}}            → integer
+  {{ACCEPTED_COUNT}}       → integer
+  {{PROPOSED_COUNT}}       → integer
+  {{SUPERSEDED_COUNT}}     → integer
+  {{ROOTED_CHAINS}}        → array; each: { root_id, member_ids[] } —
+                             connected components for narrative grouping
+  {{ORPHAN_ADRS}}          → array of ADR ids with no relations (in or out)
+  ALL_RELATIONS            → flattened relation list derived from ADRS:
+                             [{ from_id, target_id, kind,
+                                is_supersedes, is_refines,
+                                is_depends_on, is_conflicts_with }]
+                             The agent precomputes the boolean kind-flags so
+                             the template can render each edge with one nested
+                             section per kind without runtime branching.
+  {{KEY_NARRATIVE}}        → derived by walking the connected components and
+                             naming the largest one (e.g. "the auth chain"),
+                             plus any conflict-with edges that flag indecision
+  {{PROSE_SOURCES}}        → bracketed paths to projects/<slug>/7-adr/*.md
+  {{DATE}}                 → YYYY-MM-DD
+
+Note: Edge style varies by relation kind:
+  supersedes      → -.->|"supersedes"|     (dashed, points back at older)
+  refines         → -->|"refines"|         (solid)
+  depends-on      → -->|"depends on"|      (solid)
+  conflicts-with  → ===|"⚠ conflict"|=     (bold, both directions implied)
+-->
+# D{{N}} — ADR Dependency Graph
+
+**Audience:** Architect + new joiners (decision archaeology).
+**When to look at this:** When onboarding to a project, when proposing a new ADR ("does this conflict with anything?"), when auditing decision lineage. Especially valuable past 10+ ADRs where prose-walks become impractical.
+**Prose gap closed:** ADRs cite each other in prose; this diagram shows the **decision lineage** as a DAG so superseded chains and conflict-with pairs are visible at a glance.
+
+---
+
+## How {{ADR_COUNT}} ADRs depend on, refine, supersede, or conflict with each other
+
+```mermaid
+flowchart TD
+    {{#ADRS}}
+    {{id}}["<b>ADR-{{id}}</b><br/>{{title}}<br/><i>{{status}}</i>"]:::{{status_class}}
+    {{/ADRS}}
+
+    {{#ALL_RELATIONS}}
+    {{#is_supersedes}}{{from_id}} -.->|"supersedes"| {{target_id}}{{/is_supersedes}}
+    {{#is_refines}}{{from_id}} -->|"refines"| {{target_id}}{{/is_refines}}
+    {{#is_depends_on}}{{from_id}} -->|"depends on"| {{target_id}}{{/is_depends_on}}
+    {{#is_conflicts_with}}{{from_id}} ===|"⚠ conflict"| {{target_id}}{{/is_conflicts_with}}
+    {{/ALL_RELATIONS}}
+
+    classDef accepted fill:#d6f5d6,stroke:#2e8b2e,color:#222
+    classDef proposed fill:#f0f0f0,stroke:#666,color:#222
+    classDef superseded fill:#e0e0e0,stroke:#999,color:#666,stroke-dasharray:3 3
+    classDef rejected fill:#ffd6d6,stroke:#c23838,color:#666,stroke-dasharray:3 3
+    classDef deprecated fill:#ffe4b5,stroke:#c8740a,color:#444
+```
+
+---
+
+## How to read this
+
+- **Each node is an ADR.** Status colour is canonical: 🟢 Accepted, ⬜
+  Proposed, ⬛ Superseded (dashed), 🟥 Rejected (dashed), 🟧 Deprecated.
+- **Solid arrows** mean active dependency: `refines` (this ADR adds
+  detail to that one) or `depends on` (this ADR's decision is only
+  valid if that one holds).
+- **Dashed arrows** are `supersedes` — historical lineage. Follow the
+  chain back to see how the current decision evolved.
+- **Bold double-line edges** are `⚠ conflict` — two ADRs that the
+  project knows are in tension. They warrant resolution: a new ADR
+  that supersedes one or both, or an explicit "we accept the tension"
+  note.
+- **Orphan ADRs** (no edges in or out) are listed below the diagram.
+  They may be standalone, or may indicate missed citation work.
+
+### Connected-component summary
+
+{{#ROOTED_CHAINS}}
+- **Chain rooted at ADR-{{root_id}}** ({{member_count}} members):
+  {{#member_ids}}ADR-{{.}}{{^_last}}, {{/_last}}{{/member_ids}}
+{{/ROOTED_CHAINS}}
+
+{{#ORPHAN_ADRS}}
+**Orphan ADRs (no relations):** {{#.}}ADR-{{.}}{{^_last}}, {{/_last}}{{/.}}
+{{/ORPHAN_ADRS}}
+
+### Status totals
+
+- 🟢 **Accepted:** {{ACCEPTED_COUNT}}
+- ⬜ **Proposed:** {{PROPOSED_COUNT}}
+- ⬛ **Superseded:** {{SUPERSEDED_COUNT}}
+
+### Key narrative
+
+{{KEY_NARRATIVE}}
+
+### What this diagram deliberately does *not* show
+
+- **The actual decision content** — open the linked ADR file to read
+  Decision / Consequences / Alternatives.
+- **Implementation status** — an Accepted ADR is not necessarily shipped;
+  this diagram is decision-graph only.
+- **Open questions** — those live in the canvas § Open Questions
+  fields, not in ADR relations.
+
+---
+
+## Legend
+
+| Symbol | Meaning |
+|--------|---------|
+| 🟢 Green node | Accepted — current decision in force |
+| ⬜ Grey node | Proposed — under deliberation, not yet binding |
+| ⬛ Dashed grey | Superseded — historical, kept for traceability |
+| 🟥 Dashed red | Rejected — explicitly turned down, kept to prevent re-litigation |
+| 🟧 Amber | Deprecated — being phased out but not yet superseded |
+| Solid arrow | Active relation: `refines` or `depends on` |
+| Dashed arrow | Historical relation: `supersedes` (points to the older decision) |
+| Bold `===` edge | `⚠ conflict` — known tension between two ADRs |
+
+---
+
+## Back-links
+
+- **Prose sources:** {{PROSE_SOURCES}}
+- **Glossary:** [`../4-glossary.md`](../4-glossary.md)
+- **ADR directory:** [`../7-adr/`](../7-adr/)
+- **Format reference:** MADR (Markdown Architecture Decision Records) — https://adr.github.io/madr/
+
+---
+
+*{{N}} · Generated by /ddd:diagrams · Cited from kb/patterns/ddd-diagram-catalog.md#T4.2 · Last updated: {{DATE}}*

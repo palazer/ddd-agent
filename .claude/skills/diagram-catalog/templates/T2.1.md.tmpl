@@ -1,0 +1,112 @@
+<!--
+Template for T2.1 — Strategic Classification Heatmap (Core Domain Chart)
+
+Substitution rules:
+  {{N}}                    → 2-digit emit number, e.g. "06"
+  {{PROJECT_NAME}}         → project name from README/slug
+  {{BCS}}                  → array; each: { name, model_differentiation (0-1),
+                                            strategic_importance (0-1),
+                                            classification ∈ {core, supporting, generic} }
+  core_bcs                 → partition of BCS where classification == "core"
+                             (iterated as Mustache section in legend)
+  supporting_bcs           → partition where classification == "supporting"
+  generic_bcs              → partition where classification == "generic"
+  {{KEY_NARRATIVE}}        → derived from 5-bc-candidates.md § Importance hint lines
+                             plus any Core Domain Chart prose in input/ or canvases
+  {{PROSE_SOURCES}}        → bracketed paths to 5-bc-candidates.md + 6-contexts/*.md
+                             with Importance hint
+  {{DATE}}                 → YYYY-MM-DD
+
+Note: `model_differentiation` and `strategic_importance` are normalised to [0,1]
+for plotting in Mermaid quadrantChart. The agent derives these from the BC
+canvas's Strategic Importance and Model Differentiation fields, or from the
+`Importance hint` line in 5-bc-candidates.md as a fallback (Core=0.85,
+Supporting=0.55, Generic=0.25 by default).
+-->
+# D{{N}} — Strategic Classification Heatmap
+
+**Audience:** Stakeholder + Architect (positioning conversations).
+**When to look at this:** When deciding where to invest, what to outsource, what to build off-the-shelf. Quarterly portfolio reviews.
+**Prose gap closed:** `5-bc-candidates.md` lists the Core/Supporting/Generic hint per BC; this diagram shows the **distribution** in one frame so trade-offs are visible at a glance.
+
+---
+
+## Where each bounded context lives on the Core Domain Chart
+
+```mermaid
+quadrantChart
+    title {{PROJECT_NAME}} — Strategic Classification
+    x-axis "Low Differentiation" --> "High Differentiation"
+    y-axis "Low Strategic Importance" --> "High Strategic Importance"
+    quadrant-1 "Core (invest)"
+    quadrant-2 "Strategic Supporting"
+    quadrant-3 "Generic (buy)"
+    quadrant-4 "Differentiator at risk"
+    {{#BCS}}
+    "{{name}}": [{{model_differentiation}}, {{strategic_importance}}]
+    {{/BCS}}
+```
+
+---
+
+## How to read this
+
+- **X-axis (Differentiation)** answers: *would a competitor with the same
+  capability beat us?* High differentiation means our model is hard to copy.
+- **Y-axis (Strategic Importance)** answers: *does the business depend on this
+  to win?* High importance means losing this BC threatens revenue or
+  positioning.
+- **Quadrant-1 (top-right) = Core.** Highest leverage. Build in-house, staff
+  with senior engineers, accept slow iteration if it preserves the model.
+- **Quadrant-3 (bottom-left) = Generic.** Buy or rent. Spending senior time
+  here is portfolio mismanagement.
+- **Quadrant-2 (top-left) = Strategic Supporting.** Important to win but
+  not differentiating — the canonical example is regulatory compliance.
+  Build to standard, do not over-invest.
+- **Quadrant-4 (bottom-right) = Differentiator at risk.** A capability the
+  team thinks is special, but the business doesn't actually depend on it.
+  Re-classify or de-fund.
+
+### Key narrative
+
+{{KEY_NARRATIVE}}
+
+### What this diagram deliberately does *not* show
+
+- **Volatility / change rate** — see Coupling & Volatility Matrix
+  (`<NN>-coupling-volatility-matrix.md`) if Tier-4 was generated.
+- **Integration topology** — see Bounded Context Map
+  (`02-bounded-context-map.md`).
+- **Why each BC sits where it does** — that prose lives in
+  `5-bc-candidates.md § Importance hint` and the per-BC canvas
+  Strategic-Importance field.
+
+---
+
+## Legend
+
+| Quadrant | Strategic class | Investment posture |
+|----------|-----------------|--------------------|
+| Q1 (top-right) | Core | Build in-house; senior engineers; protect the model |
+| Q2 (top-left) | Strategic Supporting | Build to standard; outsource if cheaper |
+| Q3 (bottom-left) | Generic | Buy / rent; do not staff senior |
+| Q4 (bottom-right) | Differentiator at risk | Re-classify or de-fund — mismatch between team belief and business reality |
+
+### BCs by classification
+
+**Core:** {{#core_bcs}}`{{name}}`{{^_last}}, {{/_last}}{{/core_bcs}}{{^core_bcs}}*(none)*{{/core_bcs}}
+**Supporting:** {{#supporting_bcs}}`{{name}}`{{^_last}}, {{/_last}}{{/supporting_bcs}}{{^supporting_bcs}}*(none)*{{/supporting_bcs}}
+**Generic:** {{#generic_bcs}}`{{name}}`{{^_last}}, {{/_last}}{{/generic_bcs}}{{^generic_bcs}}*(none)*{{/generic_bcs}}
+
+---
+
+## Back-links
+
+- **Prose sources:** {{PROSE_SOURCES}}
+- **Glossary:** [`../4-glossary.md`](../4-glossary.md)
+- **Pattern reference:** [`kb/patterns/core-domain-chart.md`](../../../kb/patterns/core-domain-chart.md)
+- **Strategic rationale:** [`../1-cynefin-framing.md`](../1-cynefin-framing.md)
+
+---
+
+*{{N}} · Generated by /ddd:diagrams · Cited from kb/patterns/ddd-diagram-catalog.md#T2.1 · Last updated: {{DATE}}*

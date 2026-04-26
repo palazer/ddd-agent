@@ -1,0 +1,130 @@
+<!--
+Template for T2.2 — Actor-Context Interaction Matrix
+
+Substitution rules:
+  {{N}}                    → 2-digit emit number
+  {{PROJECT_NAME}}         → project name
+  {{ACTORS}}               → array; each: { name, kind ∈ {human, system, external},
+                                            interactions[] }
+                             interactions[] = { bc_name, intensity ∈ {R, W, RW, —} }
+  {{BCS}}                  → array of BC names (column header order)
+  {{ACTOR_COUNT}}          → integer
+  {{BC_COUNT}}             → integer
+  {{HIGH_TOUCH_PAIRS}}     → array of {actor_id, bc_id, label} where intensity=="RW"
+  {{KEY_NARRATIVE}}        → derived from 2-event-storm.md actors block + canvases'
+                             § Inbound communication / § Outbound communication
+  {{PROSE_SOURCES}}        → bracketed paths to 2-event-storm.md + 6-contexts/*.md
+  {{DATE}}                 → YYYY-MM-DD
+
+Note: This is a HYBRID template — the markdown table is canonical (rows=actors,
+columns=BCs), the companion flowchart shows only RW (high-touch) edges so it
+stays readable when actor count > 5.
+-->
+# D{{N}} — Actor-Context Interaction Matrix
+
+**Audience:** Stakeholder + Architect (who-touches-what conversations).
+**When to look at this:** Onboarding new team members, scoping integrations, identifying actors who span too many contexts (BC-boundary smell).
+**Prose gap closed:** `2-event-storm.md` lists actors and the canvases describe inbound/outbound channels per BC; this matrix shows the **N×M intersection** in one frame.
+
+---
+
+## Who interacts with which bounded context — and how intensely
+
+### Reading order: matrix first, graph second
+
+The **table below is canonical** (every actor × every BC). The **companion
+flowchart** highlights only `RW` cells — the high-touch pairs that drive
+day-to-day operational concern.
+
+|  | {{#BCS}}**{{.}}** \| {{/BCS}}
+|---|{{#BCS}}---|{{/BCS}}
+{{#ACTORS}}
+| **{{name}}** ({{kind}}) | {{#interactions}}{{intensity}} \| {{/interactions}}
+{{/ACTORS}}
+
+**Cell legend:** `R` = read-only · `W` = write-only · `RW` = read+write · `—` = no interaction
+
+```mermaid
+flowchart LR
+    {{#ACTORS}}
+    {{actor_id}}(["<b>{{name}}</b><br/><i>{{kind}}</i>"]):::actor_{{kind}}
+    {{/ACTORS}}
+
+    {{#BCS}}
+    {{bc_id}}["<b>{{name}}</b>"]:::bc
+    {{/BCS}}
+
+    {{#HIGH_TOUCH_PAIRS}}
+    {{actor_id}} <==>|"{{label}}"| {{bc_id}}
+    {{/HIGH_TOUCH_PAIRS}}
+
+    classDef actor_human fill:#fff7d6,stroke:#b78a00,color:#222
+    classDef actor_system fill:#e6f0ff,stroke:#2961b8,color:#222
+    classDef actor_external fill:#ffe4ec,stroke:#a8316b,color:#222
+    classDef bc fill:#f0f0f0,stroke:#444,color:#222
+```
+
+> Companion graph shows only `RW` (read+write) interactions — the
+> bidirectional, high-touch pairs. `R` and `W` cells live in the matrix
+> only.
+
+---
+
+## How to read this
+
+- Each **row is an actor** — a human role, an internal system, or an
+  external partner that touches the domain.
+- Each **column is a bounded context** — the autonomous module the actor
+  reads from or writes to.
+- A cell with `RW` is the strongest signal: that actor and that BC are
+  **operationally coupled** — change in either side likely affects the
+  other.
+- An actor with `RW` against **many BCs** is a BC-boundary smell — either
+  the actor is a swiss-army-knife user (re-scope their workflow) or your
+  BCs are sliced wrong (re-scope the boundaries).
+- A BC column with `RW` from **many actors** is a hotspot — likely a Core
+  BC, or an over-burdened Supporting BC that should be split.
+
+### Key narrative
+
+{{KEY_NARRATIVE}}
+
+### What this diagram deliberately does *not* show
+
+- **Time / sequence of interactions** — see Golden-path Sequence diagrams
+  (`<NN>-golden-path-*.md`) if Tier-3 was generated.
+- **Authorisation level per role** — see Visibility Matrix
+  (`<NN>-visibility-matrix.md`) if Tier-3 was generated; this diagram is
+  about *whether* an actor touches a BC, the visibility matrix is about
+  *what they're allowed to do*.
+- **External-system protocols** — see External Systems Landscape
+  (`<NN>-external-systems-landscape.md`).
+
+---
+
+## Legend
+
+| Symbol | Meaning |
+|--------|---------|
+| Yellow node | Human actor (role-based, not individual users) |
+| Blue node | Internal system (cron, batch, internal services) |
+| Pink node | External partner / system (third party) |
+| `<==>` edge | Bidirectional `RW` interaction |
+| `R` | Actor reads BC state but does not modify it |
+| `W` | Actor sends commands/events into BC; does not read back |
+| `RW` | Both directions; operationally coupled |
+| `—` | No interaction in current model |
+
+**Totals:** {{ACTOR_COUNT}} actors × {{BC_COUNT}} BCs
+
+---
+
+## Back-links
+
+- **Prose sources:** {{PROSE_SOURCES}}
+- **Glossary:** [`../4-glossary.md`](../4-glossary.md)
+- **Pattern reference:** Tune, *Domain-Driven Architecture Diagrams* §4 (Business Use Case)
+
+---
+
+*{{N}} · Generated by /ddd:diagrams · Cited from kb/patterns/ddd-diagram-catalog.md#T2.2 · Last updated: {{DATE}}*

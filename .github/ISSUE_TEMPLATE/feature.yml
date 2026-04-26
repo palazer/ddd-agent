@@ -1,0 +1,80 @@
+name: Feature / improvement
+description: Propose a new ceremony, knowledge-base entry, anti-pattern, or skill improvement.
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before filing, please read [`CONTRIBUTING.md`](../blob/main/CONTRIBUTING.md) — especially
+        the "Philosophy boundary" section. Tactical-code-generation features are out of scope
+        for v1 and will be declined.
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind
+      description: What category does this fall into?
+      options:
+        - New ceremony or skill (`.claude/skills/`)
+        - New agent or agent behaviour (`.claude/agents/`)
+        - Knowledge-base addition (`kb/canonical/` or `kb/voices/`)
+        - New anti-pattern (`kb/anti-patterns/`)
+        - New pattern or canvas (`kb/patterns/`)
+        - Orchestrator change (`/ddd:ideate` or `/ddd:revise`)
+        - Documentation (`README`, `CLAUDE.md`, `CONTRIBUTING.md`)
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What problem does this solve? Whose ideation gets better, and how?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed approach
+      description: |
+        How should the agent behave differently? Sketch the change. If you're proposing a new
+        anti-pattern, name it and describe how the interrogator should push back.
+    validations:
+      required: true
+
+  - type: textarea
+    id: citations
+    attributes:
+      label: Citations
+      description: |
+        **Required** for any KB or pattern addition. Per CLAUDE.md hard-rule #4 (cite or don't claim),
+        list the source(s): book + page, blog URL, paper, etc.
+      placeholder: |
+        - Evans, *Domain-Driven Design*, ch. 5 (Aggregates)
+        - https://martinfowler.com/bliki/BoundedContext.html
+
+  - type: dropdown
+    id: scope
+    attributes:
+      label: v1 vs v2 scope
+      description: |
+        Where does this land per the [Deferred to later versions](../blob/main/README.md#deferred-to-later-versions) list?
+      options:
+        - In v1 scope (ideation only)
+        - v2 candidate (tactical layer / diagrams / domain packs)
+        - Not sure
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Confirmation
+      options:
+        - label: I've read CLAUDE.md hard rules and confirmed this proposal doesn't violate them.
+          required: true
+        - label: This is not a tactical-code-generation feature (aggregates, entities, framework scaffolding).
+          required: true

@@ -1,0 +1,80 @@
+name: Bug report
+description: Something in the agent or a ceremony skill behaves incorrectly.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug. Before filing, please:
+        - Check open issues in case it's already reported.
+        - Re-run with the latest `main` if you can — bugs in stale local copies are common.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: A clear description of the unexpected behaviour.
+      placeholder: "When I ran `/ddd:ideate \"...\"`, the facilitator skipped Step 3 entirely."
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+      description: How should it have behaved?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Minimal command(s) that surface the bug. If the bug is in a ceremony's pushback logic, paste the user input that triggered it.
+      placeholder: |
+        1. `claude`
+        2. `/ddd:ideate "tiny library-loans domain"`
+        3. After Step 2, the agent ...
+      render: markdown
+    validations:
+      required: true
+
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Surface
+      description: Which Claude Code surface did you use?
+      options:
+        - CLI (`claude` in a terminal)
+        - Desktop app
+        - Web (claude.ai/code)
+        - VS Code / JetBrains extension
+        - Other / not sure
+    validations:
+      required: true
+
+  - type: input
+    id: claude-code-version
+    attributes:
+      label: Claude Code version
+      description: Output of `claude --version` (CLI) or "About" panel (apps).
+      placeholder: "e.g. 1.x.x"
+    validations:
+      required: false
+
+  - type: textarea
+    id: artifacts
+    attributes:
+      label: Generated artifacts (optional)
+      description: |
+        If the bug involves the orchestrator emitting something incorrectly, paste the offending artifact's path and content (or a diff). Strip personal info.
+      render: markdown
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Confirmation
+      options:
+        - label: I've checked the README, CLAUDE.md hard rules, and existing issues before filing.
+          required: true

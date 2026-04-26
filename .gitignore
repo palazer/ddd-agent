@@ -1,0 +1,23 @@
+# Reference clones of upstream OSS assets — not part of this repo
+vendor/
+
+# Per-project working artifacts (ubiquitous-language, event storms, canvases, ADRs)
+# Keep the directory, ignore contents (except .gitkeep)
+projects/*
+!projects/.gitkeep
+
+# OS / editor noise
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*~
+
+# Claude Code local session state
+.claude/settings.local.json
+
+# Defensive — environment files, build artifacts, logs
+.env
+.env.*
+*.log
+node_modules/
