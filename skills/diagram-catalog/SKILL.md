@@ -8,7 +8,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash, Skill, Agent, AskUserQuestio
 # Diagram Catalog
 
 The skill that powers `/ddd:diagrams`. Drives the 5-phase flow specified in
-`.claude/commands/ddd/diagrams.md`.
+`commands/ddd/diagrams.md`.
 
 **Canonical reference:** `kb/patterns/ddd-diagram-catalog.md` (tier
 definitions, trigger conditions, structural template, Mermaid limitations).
@@ -156,7 +156,7 @@ fix the underlying signal (e.g. add a Core Domain Chart classification).
 For each chosen diagram ID `<TIER-ID>`:
 
 1. **Locate the template.**
-   - Try `.claude/skills/diagram-catalog/templates/<TIER-ID>.md.tmpl`.
+   - Try `skills/diagram-catalog/templates/<TIER-ID>.md.tmpl`.
    - Templates ship for all 14 catalog IDs (`T1.1.md.tmpl` through
      `T4.3.md.tmpl`). The Mermaid type for each is locked in
      `kb/patterns/ddd-diagram-catalog.md § Mermaid type per diagram` —
@@ -278,13 +278,13 @@ For each chosen diagram ID `<TIER-ID>`:
 After all chosen diagrams are emitted:
 
 1. **Render script.** Read
-   `.claude/skills/diagram-catalog/templates/render.sh.tmpl` and write to
+   `skills/diagram-catalog/templates/render.sh.tmpl` and write to
    `projects/<slug>/0-diagrams/render.sh`. Make executable: `chmod +x`.
    - If `render.sh` already exists, do NOT overwrite. The user may have
      customised. Skip with a note.
 
 2. **Folder README.** Read
-   `.claude/skills/diagram-catalog/templates/diagrams-readme.md.tmpl` and
+   `skills/diagram-catalog/templates/diagrams-readme.md.tmpl` and
    substitute the per-diagram entries based on what was emitted in Phase
    3. Write to `projects/<slug>/0-diagrams/README.md`.
    - If `README.md` already exists, propose a **merge patch** rather
@@ -387,9 +387,9 @@ fundamental glossary work, not just one or two missing labels.
 - `kb/patterns/context-mapping-patterns.md` — edge label semantics for T1.2.
 - `kb/patterns/bounded-context-archetypes.md` — role taxonomy reused in T1.1.
 - `kb/ceremonies/event-storming.md` — pivotal-event basis for T1.4.
-- `.claude/agents/glossary-curator.md` — missing-label routing target.
-- `.claude/agents/ddd-reviser.md` — surfaces `diagrams-affected` field.
-- `.claude/commands/ddd/diagrams.md` — command shell.
+- `agents/glossary-curator.md` — missing-label routing target.
+- `agents/ddd-reviser.md` — surfaces `diagrams-affected` field.
+- `commands/ddd/diagrams.md` — command shell.
 
 ## Attribution
 

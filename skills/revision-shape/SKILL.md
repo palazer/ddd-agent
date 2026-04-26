@@ -288,7 +288,7 @@ Rules (per `CLAUDE.md §1` Plöd-L3 ceiling):
 
 - Spawn-once, resume-thereafter. First interrogator call in the session
   → `Agent`; subsequent calls → `SendMessage`. Same pattern as the
-  existing Phase 4 pre-walk hook in `.claude/agents/ddd-reviser.md`.
+  existing Phase 4 pre-walk hook in `agents/ddd-reviser.md`.
 - Cap at 2 rounds per patch. On round 3 → reviser escalates to user
   with a `Hold` recommendation.
 
@@ -337,14 +337,14 @@ any mode:
 - `kb/voices/baas-schwegler-facilitation.md` — preserve dissent.
 - `kb/anti-patterns/premature-tactical-design.md` — refuse code drift.
 - `CLAUDE.md §1, §3, §4, §6` — hard rules honoured by this skill.
-- `.claude/agents/ddd-reviser.md` — the orchestrator that drives the
+- `agents/ddd-reviser.md` — the orchestrator that drives the
   Phase 0 loop.
 
 ## Attribution
 
-Structure adapted from `.claude/skills/event-storming/SKILL.md`
+Structure adapted from `skills/event-storming/SKILL.md`
 (interrogator-mode facilitation, hotspot preservation) and
-`.claude/skills/revision-plan/SKILL.md` (Before/After patch drafting,
+`skills/revision-plan/SKILL.md` (Before/After patch drafting,
 interrogator-required flagging). Multi-mode invocation pattern is novel
 to this skill — necessary because Phase 0 is a conversational loop
 rather than a single-shot compute.

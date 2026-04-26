@@ -5,6 +5,26 @@ All notable changes to ddd-agent are documented here. Format follows
 follows [Semantic Versioning](https://semver.org/) loosely (skill bundle
 rather than a library).
 
+## [1.0.1] — 2026-04-26
+
+Hotfix for v1.0.0 plugin manifest validation. No behavioural changes.
+
+### Fixed
+- `.claude-plugin/plugin.json` — removed `commands`, `agents`, `skills`
+  fields that were rejected by Claude Code's plugin schema validator
+  ("Invalid input"). Components are now auto-discovered.
+- Component layout — moved `.claude/{agents,commands,skills}/` to
+  `{agents,commands,skills}/` at plugin root, matching the canonical
+  Claude Code plugin shape required for marketplace install.
+- README, CONTRIBUTING.md, CLAUDE.md, and internal skill/agent
+  cross-references updated for the new layout.
+
+### Notes for v1.0.0 users
+v1.0.0 published with a manifest layout that prevented `/plugin install`
+from completing. v1.0.1 is the first install-correct release. No file
+contents changed apart from path-reference updates; pulling latest
+`main` and reinstalling is sufficient.
+
 ## [1.0.0] — 2026-04-26
 
 Initial public release. Ideation + visual companions in one bundle.

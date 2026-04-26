@@ -1,12 +1,9 @@
 {
   "name": "ddd-agent",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "DDD ideation sparring partner — Plöd-L3 interrogator agent for Domain-Driven Design ceremonies. Walks Cynefin framing, Event Storming, Domain Storytelling, Example Mapping, Bounded Context Canvas, Context Mapping, and emits Mermaid visual companions via /ddd:diagrams (14-ID catalog with cascade-aware drift detection). v1 scope: ideation + visual companions; tactical code generation stays out.",
   "author": {
     "name": "Erkin Palaz"
   },
-  "license": "CC-BY-SA-4.0 AND MIT",
-  "skills": ".claude/skills",
-  "agents": ".claude/agents",
-  "commands": ".claude/commands"
+  "license": "CC-BY-SA-4.0 AND MIT"
 }

@@ -178,4 +178,4 @@ If any precondition fails, the reviser aborts with a clear explanation.
 
 - `kb/patterns/artifact-impact-matrix.md` — matrix + change-kind taxonomy.
 - `CLAUDE.md §6` — revision enforcement protocol (generalised Renaming Manifest).
-- `.claude/agents/ddd-reviser.md` — orchestrator spec.
+- `agents/ddd-reviser.md` — orchestrator spec.

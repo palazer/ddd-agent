@@ -90,9 +90,9 @@ git clone https://github.com/palazer/ddd-agent ~/tools/ddd-agent
 # 2. From inside the project where you want to use the skills:
 cd ~/code/your-project
 mkdir -p .claude
-ln -s ~/tools/ddd-agent/.claude/agents   .claude/agents
-ln -s ~/tools/ddd-agent/.claude/skills   .claude/skills
-ln -s ~/tools/ddd-agent/.claude/commands/ddd .claude/commands/ddd
+ln -s ~/tools/ddd-agent/agents   .claude/agents
+ln -s ~/tools/ddd-agent/skills   .claude/skills
+ln -s ~/tools/ddd-agent/commands/ddd .claude/commands/ddd
 
 # 3. Optional but recommended — the kb/ is referenced by skills and agents.
 #    Symlink it into the project too, or keep the repo path stable so the
@@ -109,9 +109,9 @@ If you only need the agent for one project and don't want symlink management:
 
 ```bash
 git clone https://github.com/palazer/ddd-agent /tmp/ddd-agent
-cp -r /tmp/ddd-agent/.claude/agents   ~/code/your-project/.claude/agents
-cp -r /tmp/ddd-agent/.claude/skills   ~/code/your-project/.claude/skills
-cp -r /tmp/ddd-agent/.claude/commands/ddd ~/code/your-project/.claude/commands/ddd
+cp -r /tmp/ddd-agent/agents   ~/code/your-project/.claude/agents
+cp -r /tmp/ddd-agent/skills   ~/code/your-project/.claude/skills
+cp -r /tmp/ddd-agent/commands/ddd ~/code/your-project/.claude/commands/ddd
 cp -r /tmp/ddd-agent/kb               ~/code/your-project/.claude/kb
 ```
 
@@ -231,7 +231,9 @@ projects/<slug>/ (gitignored) Per-project working artifacts. Layout:
                  (1-cynefin-framing.md … 7-context-map.md + 7-adr/
                  + 8-revisions/ for /ddd:revise audit records
                  + 0-diagrams/ for /ddd:diagrams Mermaid companions)
-.claude/         Skills, subagents, slash commands
+skills/          Plugin skills (auto-discovered at install time)
+agents/          Specialist subagents (auto-discovered)
+commands/        Slash commands under /ddd:* (auto-discovered)
 .claude-plugin/  Plugin and marketplace manifests (drives /plugin install)
 .github/         Issue templates and PR template
 CLAUDE.md        Agent instructions — hard rules and directory map
@@ -279,11 +281,11 @@ licensing decisions lives in
 | [ddd-crew/aggregate-design-canvas](https://github.com/ddd-crew/aggregate-design-canvas) | CC BY 4.0 | `kb/patterns/aggregate-design-canvas.md` |
 | [ddd-crew/core-domain-charts](https://github.com/ddd-crew/core-domain-charts) | CC BY 4.0 | `kb/patterns/core-domain-chart.md`, `kb/patterns/core-domain-chart-examples.md` |
 | [ddd-crew/ddd-starter-modelling-process](https://github.com/ddd-crew/ddd-starter-modelling-process) | CC BY 4.0 | `kb/patterns/ddd-starter-modelling-process.md` (orchestrator backbone) |
-| [ddd-crew/ai-ddd-prompts-and-rules](https://github.com/ddd-crew/ai-ddd-prompts-and-rules) | reference only | concept inspiration for `.claude/agents/glossary-curator.md` (term-drift detection) |
-| [melodic-software/claude-code-plugins](https://github.com/melodic-software/claude-code-plugins) | MIT | `.claude/skills/event-storming/`, `.claude/agents/{event-storming-persona,context-mapper,story-facilitator,adr-creator}.md` |
+| [ddd-crew/ai-ddd-prompts-and-rules](https://github.com/ddd-crew/ai-ddd-prompts-and-rules) | reference only | concept inspiration for `agents/glossary-curator.md` (term-drift detection) |
+| [melodic-software/claude-code-plugins](https://github.com/melodic-software/claude-code-plugins) | MIT | `skills/event-storming/`, `agents/{event-storming-persona,context-mapper,story-facilitator,adr-creator}.md` |
 | Eric Evans — *DDD Reference* | CC BY 4.0 | condensed summaries in `kb/canonical/` |
 | Vaughn Vernon — *Effective Aggregate Design* | CC BY-ND 3.0 | citation only — never reproduced |
-| Anthropic — ["Building effective agents"](https://www.anthropic.com/engineering/building-effective-agents) | (essay) | evaluator-optimizer loop pattern in `.claude/agents/ddd-reviser.md` |
+| Anthropic — ["Building effective agents"](https://www.anthropic.com/engineering/building-effective-agents) | (essay) | evaluator-optimizer loop pattern in `agents/ddd-reviser.md` |
 | Martin Fowler bliki, Mathias Verraes, Vlad Khononov, Nick Tune, Kenny Baas-Schwegler | various / fair-use citation | modern voices in `kb/voices/` |
 
 Upstream contributors to the ddd-crew canvases include (non-exhaustive):
@@ -300,8 +302,9 @@ contents:
 - **Knowledge artifacts** under `kb/` and `research/` — **CC BY-SA 4.0**.
   Matches the upstream ddd-crew lineage; share-alike on derivatives keeps
   the DDD knowledge commons open.
-- **Agent code** under `.claude/` — **MIT**. Maximally reusable in other
-  Claude Code projects and downstream skill bundles.
+- **Agent code** under `agents/`, `commands/`, `skills/`, and `.claude-plugin/`
+  — **MIT**. Maximally reusable in other Claude Code projects and downstream
+  skill bundles.
 
 Files outside these scopes default to **MIT**. Vendored upstream material
 retains its original license; see each file's frontmatter and

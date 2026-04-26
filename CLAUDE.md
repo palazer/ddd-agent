@@ -36,8 +36,8 @@ rather than answers.
   ```
   Numeric prefixes reflect ceremony order; `3b` / `6` / `7` / `8` folder
   prefixes preserve reading order when expanded as directories.
-- `.claude/skills/`, `.claude/agents/`, `.claude/commands/` — standard Claude Code
-  layout.
+- `skills/`, `agents/`, `commands/` — plugin components at the root, the
+  canonical Claude Code plugin layout (auto-discovered at install time).
 
 ## Hard rules
 

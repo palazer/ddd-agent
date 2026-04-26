@@ -136,7 +136,7 @@ For each chosen diagram ID:
 
 1. Read the templates:
    - `kb/patterns/ddd-diagram-catalog.md` (canonical structural template)
-   - `.claude/skills/diagram-catalog/templates/<TIER-ID>.md.tmpl` (Tier-1
+   - `skills/diagram-catalog/templates/<TIER-ID>.md.tmpl` (Tier-1
      templates ship; Tier-2/3/4 fall back to the structural template with
      a placeholder Mermaid block).
 
@@ -200,7 +200,7 @@ project's `0-diagrams/`. It only refreshes existing files.
 
 ## Skills/agents invoked
 
-- `diagram-catalog` skill (`.claude/skills/diagram-catalog/SKILL.md`) —
+- `diagram-catalog` skill (`skills/diagram-catalog/SKILL.md`) —
   the operational driver of all 5 phases.
 - `glossary-curator` agent — when a Mermaid block needs a label not in
   the glossary, route to glossary-curator rather than inventing it.
@@ -267,6 +267,6 @@ found — run `/ddd:event-storm` first or skip T1.4").
   conditions; structural template; Mermaid limitations.
 - `kb/patterns/artifact-impact-matrix.md § Diagrams as a downstream
   type` — cascade hook spec.
-- `.claude/skills/diagram-catalog/SKILL.md` — operational driver.
-- `.claude/agents/ddd-reviser.md` — surfaces `diagrams-affected:` field
+- `skills/diagram-catalog/SKILL.md` — operational driver.
+- `agents/ddd-reviser.md` — surfaces `diagrams-affected:` field
   in manifest rows for cascading revisions.

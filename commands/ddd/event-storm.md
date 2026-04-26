@@ -22,7 +22,7 @@ Direct entry point into the `event-storming` skill.
    ask for confirmation before proceeding.
 3. Invoke the `event-storming` skill with the provided description.
 4. After completion, suggest follow-ups per
-   `.claude/skills/event-storming/SKILL.md § Post-run suggestions`.
+   `skills/event-storming/SKILL.md § Post-run suggestions`.
 
 ## Skill invoked
 

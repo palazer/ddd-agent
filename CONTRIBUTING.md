@@ -12,10 +12,10 @@ following are in-scope for v1:
   Domain Storytelling, Example Mapping, BC Canvas, Context Mapping).
 - Strengthening the diagram catalog and Mermaid templates
   (`kb/patterns/ddd-diagram-catalog.md`,
-  `.claude/skills/diagram-catalog/templates/`).
+  `skills/diagram-catalog/templates/`).
 - Adding to the curated knowledge base under `kb/` (canonical references,
   modern voices, anti-patterns, patterns).
-- Sharpening the interrogator agent's pushbacks (`.claude/agents/`).
+- Sharpening the interrogator agent's pushbacks (`agents/`).
 - Bug fixes in the orchestrator (`/ddd:ideate`, `/ddd:revise`,
   `/ddd:diagrams`) and skills.
 
@@ -84,8 +84,8 @@ targeted ceremony instead — e.g. `/ddd:bc-canvas` if you touched the BC
 Canvas knowledge base.
 
 If your PR touches `/ddd:diagrams`, the diagram catalog, or any file under
-`.claude/skills/diagram-catalog/`, run the diagram skill against the same
-test slug after the ideation completes:
+`skills/diagram-catalog/`, run the diagram skill against the same test slug
+after the ideation completes:
 
 ```
 /ddd:diagrams --slug <test-slug>
