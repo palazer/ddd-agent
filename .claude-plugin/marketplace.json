@@ -5,14 +5,14 @@
   },
   "metadata": {
     "description": "Single-plugin marketplace hosting the DDD Sparring Partner — a Plöd-L3 interrogator agent for Domain-Driven Design ideation, with Mermaid visual companions via /ddd:diagrams.",
-    "version": "1.0.1"
+    "version": "1.1.0"
   },
   "plugins": [
     {
       "name": "ddd-agent",
       "source": "./",
       "description": "Personal DDD ideation sparring partner. Plöd-L3 interrogator that pushes back on tactical-design shortcuts. Ideation + Mermaid visual companions — Cynefin framing, Event Storming, Domain Storytelling, Bounded Context Canvas, Context Mapping, interview-driven diagram catalog (14 IDs, 4 tiers).",
-      "version": "1.0.1",
+      "version": "1.1.0",
       "author": {
         "name": "Erkin Palaz"
       },

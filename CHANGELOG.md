@@ -7,6 +7,12 @@ rather than a library).
 
 ## [Unreleased]
 
+## [1.1.0] — 2026-05-05
+
+Additive minor release. New audience-graduated prose presentation
+companion alongside the existing diagram catalog. No breaking
+changes; existing artifacts and workflows unaffected.
+
 ### Added — Prose presentation companion
 - `/ddd:present` slash command — produces the 4-tier audience-graduated
   prose companion `projects/<slug>/0-presentation.md`. Solves the
@@ -43,9 +49,6 @@ rather than a library).
   the skill suffices; if iterative third-party-readability QA is
   needed later, a `presentation-reviewer` agent is the natural
   extension point.
-- No version bump. This entry sits in [Unreleased] until the next
-  tag; a MINOR bump to v1.1.0 is appropriate when released since this
-  is an additive ceremony.
 
 ## [1.0.1] — 2026-04-26
 
